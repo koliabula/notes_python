@@ -4,6 +4,8 @@ from tkinter import ttk
 import tkinter
 from tkinter.messagebox import showerror, showinfo
 
+    
+
 def note_pad_edit():
     if(notes_listbox.curselection()):
         help = 'edit'
@@ -33,7 +35,18 @@ def note_pad(help):
     editor = Text(window, wrap="word")
     editor.place(x=5, y=40, height=380, width=450)
 
+    def finish():
+        window.destroy()  # ручное закрытие окна и всего приложения
+        btn_edit.config(state = 'normal')
+        delete_btn.config(state = 'normal')
+
+    window.protocol("WM_DELETE_WINDOW", finish)
+
+
     if(help == 'edit'):
+        
+        btn_edit.config(state = 'disable')
+        delete_btn.config(state = 'disable')
         selection = notes_listbox.curselection()
         pole_name.insert(0, notes_listbox.get(selection[0]))
         s = 'notes/'+notes_listbox.get(selection[0])+'.txt'
@@ -53,6 +66,8 @@ def note_pad(help):
 
     def save_text():
         file_path = 'notes/' + str(pole_name.get()) + '.txt'
+        btn_edit.config(state = 'normal')
+        delete_btn.config(state = 'normal')
        
         if(help=='create'):
             if(os.path.exists(file_path)):
@@ -83,7 +98,7 @@ def add_notes_in_listbox():
         for entry in listOfEntries:
             # печать всех записей, являющихся файлами
             if entry.is_file():
-                notes_listbox.insert(END, entry.name.split('.')[0])   
+                notes_listbox.insert(END, entry.name.split('.txt')[0])   
 
 
 def delete_notes():
@@ -98,24 +113,24 @@ def delete_notes():
 root = Tk()     # создаем корневой объект - окно
 root.title("Приложение Заметки 1.0")     # устанавливаем заголовок окна
 root.iconbitmap(default="ico/sketch.ico")
-root.geometry("500x300+1000+100")    # устанавливаем размеры окна
+root.geometry("500x300+100+100")    # устанавливаем размеры окна
 
-root.minsize(200,150)   # минимальные размеры: ширина - 200, высота - 150
-root.maxsize(700,600)   # максимальные размеры: ширина - 400, высота - 300
+root.minsize(500,300)   # минимальные размеры: ширина - 200, высота - 15
 
-btn_save= ttk.Button(text="Создать заметку", width=20, command=note_pad_create)
+btn_save = ttk.Button(text="Создать заметку", width=24, command=note_pad_create)
 btn_save.pack(anchor=NW)
-btn_edit = ttk.Button(text="Редактировать заметку", width=20, command=note_pad_edit)
+btn_edit = ttk.Button(text="Редактировать заметку", width=24, state='normal', command=note_pad_edit)
 btn_edit.pack(anchor=NW)
+delete_btn = ttk.Button(text="Удалить", width=24, state='normal', command=delete_notes, )
+delete_btn.pack(anchor=NW)
  
 # создаем список
 notes_listbox = Listbox()
-notes_listbox.place(x=200, y=50)
+notes_listbox.place(x=154)
 
 add_notes_in_listbox()
 
 
-delete_btn =ttk.Button(text="Удалить", command=delete_notes).pack(anchor=NW)
 
 
 root.mainloop()
